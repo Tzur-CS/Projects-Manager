@@ -3,7 +3,9 @@
 ### Answers in Answers.md
 
 A full-stack web application for managing projects and tasks with user authentication, built with Spring Boot (Java) backend and React (TypeScript) frontend.
-
+### For login to the user on the frontend:
+- user 1: tzur , password: 123456
+- user 2: eden , password: 123456
 ## 🎯 Overview
 
 This is a full-stack (backend oriented) task management application that allows users to:
@@ -12,6 +14,17 @@ This is a full-stack (backend oriented) task management application that allows 
 - Track task status and priorities
 - User authentication via AWS Cognito
 - RESTful API backend with Swagger documentation
+
+# login page:
+![img.png](img.png)
+
+# home page:
+![img_1.png](img_1.png)
+![img_2.png](img_2.png)
+![img_3.png](img_3.png)
+
+# health check page:
+![img_4.png](img_4.png)
 
 ## ✨ Features
 
@@ -122,13 +135,7 @@ export const API_BASE_URL = 'http://localhost:8080';
 
 ### Start the Backend
 
-**Option 1: Local Mode (No Authentication - Recommended for Development if DB not init yet)**
-```bash
-# From project root
-mvn spring-boot:run -Dspring-boot.run.profiles=local
-```
-
-**Option 2: Dev Mode (With AWS Cognito)**
+**Option 1: Dev Mode (With AWS Cognito)**
 ```bash
 # From project root
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
@@ -176,20 +183,6 @@ spring.datasource.url=jdbc:mysql://localhost:3306/moveo-db
 spring.datasource.username=root
 spring.datasource.password=your_password
 ```
-
-## 🧪 Testing
-
-**Backend:**
-```bash
-mvn test
-```
-
-**Frontend:**
-```bash
-cd frontend-code/my-react-app
-npm test
-```
-
 
 ## 📝 Project Structure
 
