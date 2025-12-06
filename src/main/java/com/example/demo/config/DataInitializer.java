@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Database initialization with real user data
- * Creates 2 users (Tzur and Eden) with their actual Cognito sub IDs
+ * Creates 2 users (Tzur and Eden) with their actual Cognito sub IDs in addition to the admin user (Moveo)
  */
 @Configuration
 public class DataInitializer {
@@ -42,8 +42,6 @@ public class DataInitializer {
             // ==================== Create Users ====================
 
             User tzur = new User();
-            tzur.setName("Tzur");
-            tzur.setEmail("tzur@example.com");
             tzur.setUsername("tzur");
             tzur.setCognitoSub(TZUR_SUB);
             tzur.setRole(User.UserRole.USER);
@@ -51,8 +49,6 @@ public class DataInitializer {
             log.info("Created user: Tzur ({}) - Role: USER", TZUR_SUB);
 
             User eden = new User();
-            eden.setName("Eden");
-            eden.setEmail("eden@example.com");
             eden.setUsername("eden");
             eden.setCognitoSub(EDEN_SUB);
             eden.setRole(User.UserRole.USER);
@@ -60,8 +56,6 @@ public class DataInitializer {
             log.info("Created user: Eden ({}) - Role: USER", EDEN_SUB);
 
             User moveo = new User();
-            moveo.setName("Moveo");
-            moveo.setEmail("moveo@example.com");
             moveo.setUsername("moveo");
             moveo.setCognitoSub(MOVEO_SUB);
             moveo.setRole(User.UserRole.ADMIN);
@@ -69,122 +63,85 @@ public class DataInitializer {
             log.info("Created admin user: Moveo ({}) - Role: ADMIN", MOVEO_SUB);
 
             // ==================== Create Projects for Tzur ====================
-            // Tzur has 3 projects with tasks
 
             Project tzurProject1 = new Project();
-            tzurProject1.setName("Tzur project 1");
-            tzurProject1.setDescription("Building a modern Tzur project 1 with React and Spring Boot");
+            tzurProject1.setName("Tzur Project 1");
+            tzurProject1.setDescription("Tzur's first project");
             tzurProject1.setOwnerId(TZUR_SUB);
             tzurProject1 = projectRepository.save(tzurProject1);
             log.info("Created project: {} for Tzur", tzurProject1.getName());
 
-            // Tasks for Tzur project 1
-            createTask(taskRepository, tzurProject1, "Setup React Frontend",
-                      "Initialize React app with TypeScript and Vite", Task.TaskStatus.DONE, TZUR_SUB);
-            createTask(taskRepository, tzurProject1, "Design Database Schema",
-                      "Create ER diagram and MySQL tables", Task.TaskStatus.DONE, TZUR_SUB);
-            createTask(taskRepository, tzurProject1, "Implement Product Catalog",
-                      "Build product listing and detail pages", Task.TaskStatus.IN_PROGRESS, TZUR_SUB);
-            createTask(taskRepository, tzurProject1, "Add Shopping Cart",
-                      "Implement cart functionality with Redux", Task.TaskStatus.IN_PROGRESS, TZUR_SUB);
-            createTask(taskRepository, tzurProject1, "Payment Integration",
-                      "Integrate Stripe payment gateway", Task.TaskStatus.TODO, TZUR_SUB);
-            createTask(taskRepository, tzurProject1, "Order Management",
-                      "Admin panel for order processing", Task.TaskStatus.TODO, null);
+            createTask(taskRepository, tzurProject1, "Tzur Task 1", "Task 1 description", Task.TaskStatus.DONE, TZUR_SUB);
+            createTask(taskRepository, tzurProject1, "Tzur Task 2", "Task 2 description", Task.TaskStatus.DONE, TZUR_SUB);
+            createTask(taskRepository, tzurProject1, "Tzur Task 3", "Task 3 description", Task.TaskStatus.IN_PROGRESS, TZUR_SUB);
+            createTask(taskRepository, tzurProject1, "Tzur Task 4", "Task 4 description", Task.TaskStatus.IN_PROGRESS, TZUR_SUB);
+            createTask(taskRepository, tzurProject1, "Tzur Task 5", "Task 5 description", Task.TaskStatus.TODO, TZUR_SUB);
+            createTask(taskRepository, tzurProject1, "Tzur Task 6", "Task 6 description", Task.TaskStatus.TODO, TZUR_SUB);
 
             Project tzurProject2 = new Project();
-            tzurProject2.setName("Tzur project 2");
-            tzurProject2.setDescription("Cross-platform mobile app for task management using React Native");
+            tzurProject2.setName("Tzur Project 2");
+            tzurProject2.setDescription("Tzur's second project");
             tzurProject2.setOwnerId(TZUR_SUB);
             tzurProject2 = projectRepository.save(tzurProject2);
             log.info("Created project: {} for Tzur", tzurProject2.getName());
 
-            // Tasks for Tzur project 2
-            createTask(taskRepository, tzurProject2, "Setup React Native",
-                      "Initialize React Native project with Expo", Task.TaskStatus.DONE, TZUR_SUB);
-            createTask(taskRepository, tzurProject2, "Design UI Screens",
-                      "Create mockups for all app screens", Task.TaskStatus.DONE, TZUR_SUB);
-            createTask(taskRepository, tzurProject2, "Implement Authentication",
-                      "Add login/signup with AWS Cognito", Task.TaskStatus.IN_PROGRESS, TZUR_SUB);
-            createTask(taskRepository, tzurProject2, "Task CRUD Operations",
-                      "Create, read, update, delete tasks", Task.TaskStatus.TODO, null);
-            createTask(taskRepository, tzurProject2, "Push Notifications",
-                      "Implement push notifications for task reminders", Task.TaskStatus.TODO, null);
+            createTask(taskRepository, tzurProject2, "Tzur Task 7", "Task 7 description", Task.TaskStatus.DONE, TZUR_SUB);
+            createTask(taskRepository, tzurProject2, "Tzur Task 8", "Task 8 description", Task.TaskStatus.DONE, TZUR_SUB);
+            createTask(taskRepository, tzurProject2, "Tzur Task 9", "Task 9 description", Task.TaskStatus.IN_PROGRESS, TZUR_SUB);
+            createTask(taskRepository, tzurProject2, "Tzur Task 10", "Task 10 description", Task.TaskStatus.TODO, TZUR_SUB);
+            createTask(taskRepository, tzurProject2, "Tzur Task 11", "Task 11 description", Task.TaskStatus.TODO, TZUR_SUB);
 
             Project tzurProject3 = new Project();
-            tzurProject3.setName("Tzur project 3");
-            tzurProject3.setDescription("Modernize company website with new branding and improved UX");
+            tzurProject3.setName("Tzur Project 3");
+            tzurProject3.setDescription("Tzur's third project");
             tzurProject3.setOwnerId(TZUR_SUB);
             tzurProject3 = projectRepository.save(tzurProject3);
             log.info("Created project: {} for Tzur", tzurProject3.getName());
 
-            // Tasks for Website Redesign
-            createTask(taskRepository, tzurProject3, "Gather Requirements",
-                      "Interview stakeholders and collect requirements", Task.TaskStatus.DONE, TZUR_SUB);
-            createTask(taskRepository, tzurProject3, "Create Wireframes",
-                      "Design wireframes for all pages", Task.TaskStatus.IN_PROGRESS, TZUR_SUB);
-            createTask(taskRepository, tzurProject3, "Content Writing",
-                      "Write copy for all website sections", Task.TaskStatus.IN_PROGRESS, TZUR_SUB);
-            createTask(taskRepository, tzurProject3, "Frontend Development",
-                      "Implement responsive design with Tailwind CSS", Task.TaskStatus.TODO, null);
-            createTask(taskRepository, tzurProject3, "SEO Optimization",
-                      "Optimize for search engines", Task.TaskStatus.TODO, null);
-            createTask(taskRepository, tzurProject3, "Performance Testing",
-                      "Test and optimize website performance", Task.TaskStatus.TODO, null);
+            createTask(taskRepository, tzurProject3, "Tzur Task 12", "Task 12 description", Task.TaskStatus.DONE, TZUR_SUB);
+            createTask(taskRepository, tzurProject3, "Tzur Task 13", "Task 13 description", Task.TaskStatus.IN_PROGRESS, TZUR_SUB);
+            createTask(taskRepository, tzurProject3, "Tzur Task 14", "Task 14 description", Task.TaskStatus.IN_PROGRESS, TZUR_SUB);
+            createTask(taskRepository, tzurProject3, "Tzur Task 15", "Task 15 description", Task.TaskStatus.TODO, TZUR_SUB);
+            createTask(taskRepository, tzurProject3, "Tzur Task 16", "Task 16 description", Task.TaskStatus.TODO, TZUR_SUB);
+            createTask(taskRepository, tzurProject3, "Tzur Task 17", "Task 17 description", Task.TaskStatus.TODO, TZUR_SUB);
 
             // ==================== Create Projects for Eden ====================
-            // Eden has 3 projects with tasks
 
             Project edenProject1 = new Project();
-            edenProject1.setName("Customer Analytics Dashboard");
-            edenProject1.setDescription("Real-time analytics dashboard for customer behavior tracking");
+            edenProject1.setName("Eden Project 1");
+            edenProject1.setDescription("Eden's first project");
             edenProject1.setOwnerId(EDEN_SUB);
             edenProject1 = projectRepository.save(edenProject1);
             log.info("Created project: {} for Eden", edenProject1.getName());
 
-            // Tasks for Analytics Dashboard
-            createTask(taskRepository, edenProject1, "Setup Data Pipeline",
-                      "Configure data collection and ETL process", Task.TaskStatus.DONE, EDEN_SUB);
-            createTask(taskRepository, edenProject1, "Design Dashboard UI",
-                      "Create interactive charts with Chart.js", Task.TaskStatus.IN_PROGRESS, EDEN_SUB);
-            createTask(taskRepository, edenProject1, "Implement Real-time Updates",
-                      "Add WebSocket for live data updates", Task.TaskStatus.TODO, EDEN_SUB);
-            createTask(taskRepository, edenProject1, "User Segmentation",
-                      "Build user segmentation and filtering", Task.TaskStatus.TODO, null);
+            createTask(taskRepository, edenProject1, "Eden Task 1", "Task 1 description", Task.TaskStatus.DONE, EDEN_SUB);
+            createTask(taskRepository, edenProject1, "Eden Task 2", "Task 2 description", Task.TaskStatus.IN_PROGRESS, EDEN_SUB);
+            createTask(taskRepository, edenProject1, "Eden Task 3", "Task 3 description", Task.TaskStatus.TODO, EDEN_SUB);
+            createTask(taskRepository, edenProject1, "Eden Task 4", "Task 4 description", Task.TaskStatus.TODO, EDEN_SUB);
 
             Project edenProject2 = new Project();
-            edenProject2.setName("Internal HR Portal");
-            edenProject2.setDescription("Employee self-service portal for HR operations");
+            edenProject2.setName("Eden Project 2");
+            edenProject2.setDescription("Eden's second project");
             edenProject2.setOwnerId(EDEN_SUB);
             edenProject2 = projectRepository.save(edenProject2);
             log.info("Created project: {} for Eden", edenProject2.getName());
 
-            // Tasks for HR Portal
-            createTask(taskRepository, edenProject2, "Employee Profile Management",
-                      "Allow employees to update their information", Task.TaskStatus.IN_PROGRESS, EDEN_SUB);
-            createTask(taskRepository, edenProject2, "Leave Request System",
-                      "Implement leave request and approval workflow", Task.TaskStatus.TODO, EDEN_SUB);
-            createTask(taskRepository, edenProject2, "Payslip Generation",
-                      "Automatic monthly payslip generation", Task.TaskStatus.TODO, null);
+            createTask(taskRepository, edenProject2, "Eden Task 5", "Task 5 description", Task.TaskStatus.IN_PROGRESS, EDEN_SUB);
+            createTask(taskRepository, edenProject2, "Eden Task 6", "Task 6 description", Task.TaskStatus.TODO, EDEN_SUB);
+            createTask(taskRepository, edenProject2, "Eden Task 7", "Task 7 description", Task.TaskStatus.TODO, EDEN_SUB);
 
             Project edenProject3 = new Project();
-            edenProject3.setName("Inventory Management System");
-            edenProject3.setDescription("Warehouse inventory tracking and management system");
+            edenProject3.setName("Eden Project 3");
+            edenProject3.setDescription("Eden's third project");
             edenProject3.setOwnerId(EDEN_SUB);
             edenProject3 = projectRepository.save(edenProject3);
             log.info("Created project: {} for Eden", edenProject3.getName());
 
-            // Tasks for Inventory System
-            createTask(taskRepository, edenProject3, "Database Design",
-                      "Design inventory database schema", Task.TaskStatus.DONE, EDEN_SUB);
-            createTask(taskRepository, edenProject3, "Barcode Scanning",
-                      "Implement barcode scanning functionality", Task.TaskStatus.IN_PROGRESS, EDEN_SUB);
-            createTask(taskRepository, edenProject3, "Stock Alerts",
-                      "Low stock notification system", Task.TaskStatus.TODO, null);
-            createTask(taskRepository, edenProject3, "Reports Generation",
-                      "Generate inventory reports (PDF/Excel)", Task.TaskStatus.TODO, null);
-            createTask(taskRepository, edenProject3, "Supplier Management",
-                      "Manage supplier information and orders", Task.TaskStatus.TODO, null);
+            createTask(taskRepository, edenProject3, "Eden Task 8", "Task 8 description", Task.TaskStatus.DONE, EDEN_SUB);
+            createTask(taskRepository, edenProject3, "Eden Task 9", "Task 9 description", Task.TaskStatus.IN_PROGRESS, EDEN_SUB);
+            createTask(taskRepository, edenProject3, "Eden Task 10", "Task 10 description", Task.TaskStatus.TODO, EDEN_SUB);
+            createTask(taskRepository, edenProject3, "Eden Task 11", "Task 11 description", Task.TaskStatus.TODO, EDEN_SUB);
+            createTask(taskRepository, edenProject3, "Eden Task 12", "Task 12 description", Task.TaskStatus.TODO, EDEN_SUB);
 
             // ==================== Summary ====================
 
@@ -199,9 +156,11 @@ public class DataInitializer {
             log.info("Created {} tasks", taskCount);
             log.info("==============================================");
             log.info("User: Tzur ({}) - Role: USER", TZUR_SUB);
-            log.info("  - 3 projects with 17 tasks");
+            log.info("  - 3 projects (Tzur Project 1-3)");
+            log.info("  - 17 tasks (Tzur Task 1-17)");
             log.info("User: Eden ({}) - Role: USER", EDEN_SUB);
-            log.info("  - 3 projects with 12 tasks");
+            log.info("  - 3 projects (Eden Project 1-3)");
+            log.info("  - 12 tasks (Eden Task 1-12)");
             log.info("Admin: Moveo ({}) - Role: ADMIN", MOVEO_SUB);
             log.info("  - Full admin access to all projects and tasks");
             log.info("==============================================");
