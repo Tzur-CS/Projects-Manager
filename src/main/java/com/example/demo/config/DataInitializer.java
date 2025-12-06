@@ -46,21 +46,18 @@ public class DataInitializer {
             tzur.setCognitoSub(TZUR_SUB);
             tzur.setRole(User.UserRole.USER);
             userRepository.save(tzur);
-            log.info("Created user: Tzur ({}) - Role: USER", TZUR_SUB);
 
             User eden = new User();
             eden.setUsername("eden");
             eden.setCognitoSub(EDEN_SUB);
             eden.setRole(User.UserRole.USER);
             userRepository.save(eden);
-            log.info("Created user: Eden ({}) - Role: USER", EDEN_SUB);
 
             User moveo = new User();
             moveo.setUsername("moveo");
             moveo.setCognitoSub(MOVEO_SUB);
             moveo.setRole(User.UserRole.ADMIN);
             userRepository.save(moveo);
-            log.info("Created admin user: Moveo ({}) - Role: ADMIN", MOVEO_SUB);
 
             // ==================== Create Projects for Tzur ====================
 
@@ -69,7 +66,6 @@ public class DataInitializer {
             tzurProject1.setDescription("Tzur's first project");
             tzurProject1.setOwnerId(TZUR_SUB);
             tzurProject1 = projectRepository.save(tzurProject1);
-            log.info("Created project: {} for Tzur", tzurProject1.getName());
 
             createTask(taskRepository, tzurProject1, "Tzur Task 1", "Task 1 description", Task.TaskStatus.DONE, TZUR_SUB);
             createTask(taskRepository, tzurProject1, "Tzur Task 2", "Task 2 description", Task.TaskStatus.DONE, TZUR_SUB);
@@ -83,7 +79,6 @@ public class DataInitializer {
             tzurProject2.setDescription("Tzur's second project");
             tzurProject2.setOwnerId(TZUR_SUB);
             tzurProject2 = projectRepository.save(tzurProject2);
-            log.info("Created project: {} for Tzur", tzurProject2.getName());
 
             createTask(taskRepository, tzurProject2, "Tzur Task 7", "Task 7 description", Task.TaskStatus.DONE, TZUR_SUB);
             createTask(taskRepository, tzurProject2, "Tzur Task 8", "Task 8 description", Task.TaskStatus.DONE, TZUR_SUB);
@@ -96,7 +91,6 @@ public class DataInitializer {
             tzurProject3.setDescription("Tzur's third project");
             tzurProject3.setOwnerId(TZUR_SUB);
             tzurProject3 = projectRepository.save(tzurProject3);
-            log.info("Created project: {} for Tzur", tzurProject3.getName());
 
             createTask(taskRepository, tzurProject3, "Tzur Task 12", "Task 12 description", Task.TaskStatus.DONE, TZUR_SUB);
             createTask(taskRepository, tzurProject3, "Tzur Task 13", "Task 13 description", Task.TaskStatus.IN_PROGRESS, TZUR_SUB);
@@ -112,7 +106,6 @@ public class DataInitializer {
             edenProject1.setDescription("Eden's first project");
             edenProject1.setOwnerId(EDEN_SUB);
             edenProject1 = projectRepository.save(edenProject1);
-            log.info("Created project: {} for Eden", edenProject1.getName());
 
             createTask(taskRepository, edenProject1, "Eden Task 1", "Task 1 description", Task.TaskStatus.DONE, EDEN_SUB);
             createTask(taskRepository, edenProject1, "Eden Task 2", "Task 2 description", Task.TaskStatus.IN_PROGRESS, EDEN_SUB);
@@ -124,7 +117,6 @@ public class DataInitializer {
             edenProject2.setDescription("Eden's second project");
             edenProject2.setOwnerId(EDEN_SUB);
             edenProject2 = projectRepository.save(edenProject2);
-            log.info("Created project: {} for Eden", edenProject2.getName());
 
             createTask(taskRepository, edenProject2, "Eden Task 5", "Task 5 description", Task.TaskStatus.IN_PROGRESS, EDEN_SUB);
             createTask(taskRepository, edenProject2, "Eden Task 6", "Task 6 description", Task.TaskStatus.TODO, EDEN_SUB);
@@ -135,7 +127,6 @@ public class DataInitializer {
             edenProject3.setDescription("Eden's third project");
             edenProject3.setOwnerId(EDEN_SUB);
             edenProject3 = projectRepository.save(edenProject3);
-            log.info("Created project: {} for Eden", edenProject3.getName());
 
             createTask(taskRepository, edenProject3, "Eden Task 8", "Task 8 description", Task.TaskStatus.DONE, EDEN_SUB);
             createTask(taskRepository, edenProject3, "Eden Task 9", "Task 9 description", Task.TaskStatus.IN_PROGRESS, EDEN_SUB);

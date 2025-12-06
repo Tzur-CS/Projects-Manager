@@ -59,8 +59,6 @@ public class TaskService {
     }
 
     public Task createTask(CreateTaskRequest request, String userId, boolean isAdmin) {
-        log.info("Creating new task for project: {}", request.getProjectId());
-
         Project project = isAdmin ? projectService.getProjectById(request.getProjectId())
                                   : projectService.getProjectByIdAndOwner(request.getProjectId(), userId);
 
@@ -77,13 +75,10 @@ public class TaskService {
         }
 
         Task savedTask = taskRepository.save(task);
-        log.info("Task created successfully with id: {}", savedTask.getId());
         return savedTask;
     }
 
     public Task updateTask(Long id, UpdateTaskRequest request, String userId, boolean isAdmin) {
-        log.info("Updating task with id: {}", id);
-
         Task task = getTaskById(id);
 
         if (!isAdmin) {
@@ -104,7 +99,6 @@ public class TaskService {
         }
 
         Task updatedTask = taskRepository.save(task);
-        log.info("Task updated successfully with id: {}", updatedTask.getId());
         return updatedTask;
     }
 
@@ -118,13 +112,10 @@ public class TaskService {
         task.setStatus(status);
 
         Task updatedTask = taskRepository.save(task);
-        log.info("Task status updated successfully");
         return updatedTask;
     }
 
     public void deleteTask(Long id, String userId, boolean isAdmin) {
-        log.info("Deleting task with id: {}", id);
-
         Task task = getTaskById(id);
 
         if (!isAdmin) {
@@ -132,7 +123,6 @@ public class TaskService {
         }
 
         taskRepository.delete(task);
-        log.info("Task deleted successfully");
     }
 
     public TaskDTO convertToDTO(Task task) {

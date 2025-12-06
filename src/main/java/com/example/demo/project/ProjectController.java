@@ -41,7 +41,6 @@ public class ProjectController {
             Authentication authentication,
             @PageableDefault(size = 10) Pageable pageable) {
         String userId = getUserId(authentication);
-        log.info("Fetching projects for user: {}", userId);
         Page<Project> projects = projectService.getProjectsByOwner(userId, pageable);
         Page<ProjectDTO> projectDTOs = projects.map(projectService::convertToDTO);
         return ResponseEntity.ok(projectDTOs);
@@ -54,7 +53,6 @@ public class ProjectController {
             @Valid @RequestBody CreateProjectRequest request,
             Authentication authentication) {
         String userId = getUserId(authentication);
-        log.info("Creating new project for user: {}", userId);
         Project project = projectService.createProject(request, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(projectService.convertToDTO(project));
     }
@@ -66,7 +64,6 @@ public class ProjectController {
             @Valid @RequestBody UpdateProjectRequest request,
             Authentication authentication) {
         String userId = getUserId(authentication);
-        log.info("Updating project with id: {} by user: {}", id, userId);
         Project project = projectService.updateProject(id, request, userId, false);
         return ResponseEntity.ok(projectService.convertToDTO(project));
     }
@@ -77,7 +74,6 @@ public class ProjectController {
             @PathVariable Long id,
             Authentication authentication) {
         String userId = getUserId(authentication);
-        log.info("Deleting project with id: {} by user: {}", id, userId);
         projectService.deleteProject(id, userId, false);
         return ResponseEntity.noContent().build();
     }

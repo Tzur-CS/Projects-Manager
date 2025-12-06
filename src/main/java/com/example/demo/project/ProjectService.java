@@ -69,15 +69,12 @@ public class ProjectService {
      * Create a new project
      */
     public Project createProject(ProjectDTO projectDTO, String ownerId) {
-        log.info("Creating new project for owner: {}", ownerId);
-
         Project project = new Project();
         project.setName(projectDTO.getName());
         project.setDescription(projectDTO.getDescription());
         project.setOwnerId(ownerId);
 
         Project savedProject = projectRepository.save(project);
-        log.info("Project created successfully with id: {} owned by: {}", savedProject.getId(), savedProject.getOwnerId());
         return savedProject;
     }
 
@@ -85,15 +82,12 @@ public class ProjectService {
      * Create a new project with CreateProjectRequest
      */
     public Project createProject(CreateProjectRequest request, String ownerId) {
-        log.info("Creating new project for owner: {}", ownerId);
-
         Project project = new Project();
         project.setName(request.getName());
         project.setDescription(request.getDescription());
         project.setOwnerId(ownerId);
 
         Project savedProject = projectRepository.save(project);
-        log.info("Project created successfully with id: {} owned by: {}", savedProject.getId(), savedProject.getOwnerId());
         return savedProject;
     }
 
@@ -101,8 +95,6 @@ public class ProjectService {
      * Update an existing project
      */
     public Project updateProject(Long id, ProjectDTO projectDTO, String ownerId, boolean isAdmin) {
-        log.info("Updating project with id: {} by user: {}", id, ownerId);
-
         Project project;
         if (isAdmin) {
             project = getProjectById(id);
@@ -114,7 +106,6 @@ public class ProjectService {
         project.setDescription(projectDTO.getDescription());
 
         Project updatedProject = projectRepository.save(project);
-        log.info("Project updated successfully with id: {}", updatedProject.getId());
         return updatedProject;
     }
 
@@ -122,8 +113,6 @@ public class ProjectService {
      * Update an existing project with UpdateProjectRequest
      */
     public Project updateProject(Long id, UpdateProjectRequest request, String ownerId, boolean isAdmin) {
-        log.info("Updating project with id: {} by user: {}", id, ownerId);
-
         Project project;
         if (isAdmin) {
             project = getProjectById(id);
@@ -140,7 +129,6 @@ public class ProjectService {
         }
 
         Project updatedProject = projectRepository.save(project);
-        log.info("Project updated successfully with id: {}", updatedProject.getId());
         return updatedProject;
     }
 
@@ -148,7 +136,6 @@ public class ProjectService {
      * Delete a project
      */
     public void deleteProject(Long id, String ownerId, boolean isAdmin) {
-        log.info("Deleting project with id: {} by user: {}", id, ownerId);
 
         Project project;
         if (isAdmin) {
@@ -158,7 +145,6 @@ public class ProjectService {
         }
 
         projectRepository.delete(project);
-        log.info("Project deleted successfully with id: {}", id);
     }
 
 

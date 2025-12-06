@@ -41,7 +41,6 @@ public class TaskController {
             @PageableDefault(size = 10) Pageable pageable) {
         String userId = getUserId(authentication);
         boolean isAdmin = hasRole(authentication, "admin");
-        log.info("Fetching tasks for project: {}", projectId);
         Page<Task> tasks = taskService.getTasksByProject(projectId, userId, isAdmin, pageable);
         Page<TaskDTO> taskDTOs = tasks.map(taskService::convertToDTO);
         return ResponseEntity.ok(taskDTOs);
@@ -56,7 +55,6 @@ public class TaskController {
             @PageableDefault(size = 10) Pageable pageable) {
         String userId = getUserId(authentication);
         boolean isAdmin = hasRole(authentication, "admin");
-        log.info("Fetching tasks for project: {} with status: {}", projectId, status);
         Page<Task> tasks = taskService.getTasksByProjectAndStatus(projectId, status, userId, isAdmin, pageable);
         Page<TaskDTO> taskDTOs = tasks.map(taskService::convertToDTO);
         return ResponseEntity.ok(taskDTOs);
@@ -69,7 +67,6 @@ public class TaskController {
             Authentication authentication) {
         String userId = getUserId(authentication);
         boolean isAdmin = hasRole(authentication, "admin");
-        log.info("Fetching task with id: {}", id);
         Task task = taskService.getTaskById(id);
 
         if (!isAdmin) {
@@ -86,7 +83,6 @@ public class TaskController {
             Authentication authentication) {
         String userId = getUserId(authentication);
         boolean isAdmin = hasRole(authentication, "admin");
-        log.info("Creating new task for project: {}", request.getProjectId());
         Task task = taskService.createTask(request, userId, isAdmin);
         return ResponseEntity.status(HttpStatus.CREATED).body(taskService.convertToDTO(task));
     }
@@ -99,7 +95,6 @@ public class TaskController {
             Authentication authentication) {
         String userId = getUserId(authentication);
         boolean isAdmin = hasRole(authentication, "admin");
-        log.info("Updating task with id: {}", id);
         Task task = taskService.updateTask(id, request, userId, isAdmin);
         return ResponseEntity.ok(taskService.convertToDTO(task));
     }
@@ -133,7 +128,6 @@ public class TaskController {
             @PathVariable Long id,
             Authentication authentication) {
         String userId = getUserId(authentication);
-        log.info("Deleting task with id: {}", id);
         taskService.deleteTask(id, userId, false);
         return ResponseEntity.noContent().build();
     }

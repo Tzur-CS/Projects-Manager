@@ -56,13 +56,6 @@ public class UserController {
     @GetMapping("/me")
     @Operation(summary = "Get my profile", description = "Retrieve the authenticated user's profile")
     public ResponseEntity<User> getMyProfile(Authentication authentication) {
-        // For local testing without authentication, return a test user or first user
-        if (authentication == null) {
-            log.info("Getting profile (no authentication - local mode)");
-            // Return the first user or create a test response
-            return ResponseEntity.ok(new User()); // Or fetch a test user
-        }
-
         Jwt jwt = (Jwt) authentication.getPrincipal();
         String username = jwt.getClaim("username");
 
