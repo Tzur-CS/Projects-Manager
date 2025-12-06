@@ -25,7 +25,6 @@ import java.util.List;
 /**
  * Security configuration for AWS Cognito authentication
  * Active for dev and prod profiles
- *
  * Features:
  * - JWT token validation
  * - Audience validation

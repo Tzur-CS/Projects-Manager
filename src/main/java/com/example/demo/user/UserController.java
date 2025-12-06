@@ -1,6 +1,5 @@
 package com.example.demo.user;
 
-import com.example.demo.security.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -79,12 +78,4 @@ public class UserController {
         return ResponseEntity.notFound().build();
     }
 
-    /**
-     * Extract user ID from JWT token
-     */
-    private String getUserId(Authentication authentication) {
-        Jwt jwt = (Jwt) authentication.getPrincipal();
-        return jwt.getSubject();
-    }
 }
-

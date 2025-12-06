@@ -45,21 +45,21 @@ public class DataInitializer {
             tzur.setUsername("tzur");
             tzur.setCognitoSub(TZUR_SUB);
             tzur.setRole(User.UserRole.USER);
-            tzur = userRepository.save(tzur);
+            userRepository.save(tzur);
             log.info("Created user: Tzur ({}) - Role: USER", TZUR_SUB);
 
             User eden = new User();
             eden.setUsername("eden");
             eden.setCognitoSub(EDEN_SUB);
             eden.setRole(User.UserRole.USER);
-            eden = userRepository.save(eden);
+            userRepository.save(eden);
             log.info("Created user: Eden ({}) - Role: USER", EDEN_SUB);
 
             User moveo = new User();
             moveo.setUsername("moveo");
             moveo.setCognitoSub(MOVEO_SUB);
             moveo.setRole(User.UserRole.ADMIN);
-            moveo = userRepository.save(moveo);
+            userRepository.save(moveo);
             log.info("Created admin user: Moveo ({}) - Role: ADMIN", MOVEO_SUB);
 
             // ==================== Create Projects for Tzur ====================
