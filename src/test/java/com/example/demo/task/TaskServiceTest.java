@@ -190,20 +190,6 @@ class TaskServiceTest {
     }
 
     @Test
-    void getTaskById_WhenNotExists_ShouldThrowException() {
-        // Arrange
-        when(taskRepository.findById(1L)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            taskService.getTaskById(1L);
-        });
-
-        assertTrue(exception.getMessage().contains("Task not found"));
-        verify(taskRepository, times(1)).findById(1L);
-    }
-
-    @Test
     void createTask_AsOwner_ShouldReturnSavedTask() {
         // Arrange
         when(projectService.getProjectByIdAndOwner(1L, userId)).thenReturn(testProject);

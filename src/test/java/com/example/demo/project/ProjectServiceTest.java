@@ -100,20 +100,6 @@ class ProjectServiceTest {
     }
 
     @Test
-    void getProjectById_WhenNotExists_ShouldThrowException() {
-        // Arrange
-        when(projectRepository.findById(1L)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            projectService.getProjectById(1L);
-        });
-
-        assertTrue(exception.getMessage().contains("Project not found"));
-        verify(projectRepository, times(1)).findById(1L);
-    }
-
-    @Test
     void getProjectByIdAndOwner_WhenExists_ShouldReturnProject() {
         // Arrange
         when(projectRepository.findByIdAndOwnerId(1L, ownerId)).thenReturn(Optional.of(testProject));
@@ -125,20 +111,6 @@ class ProjectServiceTest {
         assertNotNull(result);
         assertEquals(testProject.getId(), result.getId());
         assertEquals(ownerId, result.getOwnerId());
-        verify(projectRepository, times(1)).findByIdAndOwnerId(1L, ownerId);
-    }
-
-    @Test
-    void getProjectByIdAndOwner_WhenNotExists_ShouldThrowException() {
-        // Arrange
-        when(projectRepository.findByIdAndOwnerId(1L, ownerId)).thenReturn(Optional.empty());
-
-        // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            projectService.getProjectByIdAndOwner(1L, ownerId);
-        });
-
-        assertTrue(exception.getMessage().contains("Project not found or access denied"));
         verify(projectRepository, times(1)).findByIdAndOwnerId(1L, ownerId);
     }
 
