@@ -1,6 +1,6 @@
 package com.example.demo.user.dto;
 
-import jakarta.validation.constraints.Email;
+import com.example.demo.user.User;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,14 +13,12 @@ public class UserDTO {
 
     private Long id;
 
-    @NotBlank(message = "Name is required")
-    private String name;
+    @NotBlank(message = "Username is required")
+    private String username;
 
-    @Email(message = "Email should be valid")
-    @NotBlank(message = "Email is required")
-    private String email;
+    private String cognitoSub;
 
-    private String phone;
+    private User.UserRole role;
 
 }
 

@@ -26,13 +26,13 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public Optional<User> getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
     }
 
     public User createUser(User user) {
-        if (userRepository.existsByEmail(user.getEmail())) {
-            throw new DuplicateResourceException("User", "email", user.getEmail());
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new DuplicateResourceException("User", "username", user.getUsername());
         }
         return userRepository.save(user);
     }
@@ -41,9 +41,12 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "id", id));
 
-        user.setName(userDetails.getName());
-        user.setEmail(userDetails.getEmail());
-        user.setPhone(userDetails.getPhone());
+        if (userDetails.getUsername() != null && !userDetails.getUsername().isEmpty()) {
+            user.setUsername(userDetails.getUsername());
+        }
+        if (userDetails.getRole() != null) {
+            user.setRole(userDetails.getRole());
+        }
 
         return userRepository.save(user);
     }
