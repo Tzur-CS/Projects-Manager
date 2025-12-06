@@ -108,50 +108,6 @@ public class HealthController {
         return ResponseEntity.ok(response);
     }
 
-    /**
-     * Detailed system status endpoint
-     * Returns comprehensive system information
-     */
-    @GetMapping("/status")
-    @SecurityRequirement(name = "bearer-jwt")
-    @Operation(summary = "System status", description = "Get detailed system status information")
-    public ResponseEntity<Map<String, Object>> status(Authentication authentication) {
-        log.info("System status check received");
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("status", "healthy");
-        response.put("timestamp", Instant.now().toString());
-
-        // Backend information
-        Map<String, Object> backend = new HashMap<>();
-        backend.put("service", "Task Management System API");
-        backend.put("version", "1.0.0");
-        backend.put("environment", getActiveProfile());
-        backend.put("uptime", getUptime());
-        response.put("backend", backend);
-
-        // Authentication status
-        Map<String, Object> authStatus = new HashMap<>();
-        if (authentication != null) {
-            authStatus.put("authenticated", true);
-            authStatus.put("userId", getUserId(authentication));
-            authStatus.put("roles", authentication.getAuthorities().stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList()));
-        } else {
-            authStatus.put("authenticated", false);
-            authStatus.put("mode", "local");
-        }
-        response.put("authentication", authStatus);
-
-        // Database status (simplified)
-        Map<String, Object> database = new HashMap<>();
-        database.put("status", "connected");
-        database.put("type", "MySQL");
-        response.put("database", database);
-
-        return ResponseEntity.ok(response);
-    }
 
     /**
      * User info endpoint - returns current user's Cognito information

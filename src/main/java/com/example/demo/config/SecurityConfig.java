@@ -3,8 +3,6 @@ package com.example.demo.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.env.Environment;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,13 +12,10 @@ import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.jwt.*;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
@@ -34,7 +29,7 @@ import java.util.List;
  * Features:
  * - JWT token validation
  * - Audience validation
- * - Role extraction from cognito:groups
+ * - Role verification done in controllers via AuthorizationService
  * - CORS configuration
  */
 @Configuration
@@ -43,17 +38,11 @@ import java.util.List;
 @org.springframework.context.annotation.Profile("!local")
 public class SecurityConfig {
 
-    private final Environment environment;
-
     @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
     private String issuerUri;
 
     @Value("${spring.security.oauth2.resourceserver.jwt.audiences:}")
     private String audiences;
-
-    public SecurityConfig(Environment environment) {
-        this.environment = environment;
-    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, HandlerMappingIntrospector introspector) throws Exception {
@@ -79,10 +68,7 @@ public class SecurityConfig {
                     authz.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2 -> oauth2
-                        .jwt(jwt -> jwt
-                                .decoder(jwtDecoder())
-                                .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                        )
+                        .jwt(jwt -> jwt.decoder(jwtDecoder()))
                 )
                 .headers(headers -> headers
                         .frameOptions(frameOptions -> frameOptions.deny()) // Deny all framing
@@ -107,18 +93,6 @@ public class SecurityConfig {
         }
 
         return jwtDecoder;
-    }
-
-    @Bean
-    public JwtAuthenticationConverter jwtAuthenticationConverter() {
-        JwtGrantedAuthoritiesConverter grantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
-        // AWS Cognito uses 'cognito:groups' for groups/roles
-        grantedAuthoritiesConverter.setAuthoritiesClaimName("cognito:groups");
-        grantedAuthoritiesConverter.setAuthorityPrefix("ROLE_");
-
-        JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
-        jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(grantedAuthoritiesConverter);
-        return jwtAuthenticationConverter;
     }
 
     @Bean
@@ -178,3 +152,4 @@ public class SecurityConfig {
         }
     }
 }
+
