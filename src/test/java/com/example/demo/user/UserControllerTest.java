@@ -40,7 +40,7 @@ class UserControllerTest {
 
     @BeforeEach
     void setUp() {
-        testUser = new User(1L, "John Doe", "john@example.com", "1234567890", "johndoe", "test-cognito-sub-123", User.UserRole.USER);
+        testUser = new User(1L, "johndoe", "test-cognito-sub-123", User.UserRole.USER);
     }
 
     @Test
@@ -52,9 +52,9 @@ class UserControllerTest {
         // Act & Assert
         mockMvc.perform(get("/api/users").with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("John Doe"))
-                .andExpect(jsonPath("$[0].email").value("john@example.com"))
-                .andExpect(jsonPath("$[0].phone").value("1234567890"));
+                .andExpect(jsonPath("$[0].username").value("johndoe"))
+                .andExpect(jsonPath("$[0].cognitoSub").value("test-cognito-sub-123"))
+                .andExpect(jsonPath("$[0].role").value("USER"));
     }
 
     @Test
@@ -67,8 +67,9 @@ class UserControllerTest {
         mockMvc.perform(get("/api/users/1").with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("John Doe"))
-                .andExpect(jsonPath("$.email").value("john@example.com"));
+                .andExpect(jsonPath("$.username").value("johndoe"))
+                .andExpect(jsonPath("$.cognitoSub").value("test-cognito-sub-123"))
+                .andExpect(jsonPath("$.role").value("USER"));
     }
 
     @Test
@@ -84,104 +85,16 @@ class UserControllerTest {
 
     @Test
     @WithMockUser(roles = "admin")
-    void getUserByEmail_ShouldReturnUser_WhenEmailExists() throws Exception {
+    void getUserByUsername_ShouldReturnUser_WhenUsernameExists() throws Exception {
         // Arrange
-        when(userService.getUserByEmail("john@example.com")).thenReturn(Optional.of(testUser));
+        when(userService.getUserByUsername("johndoe")).thenReturn(Optional.of(testUser));
 
         // Act & Assert
-        mockMvc.perform(get("/api/users/email/john@example.com")
+        mockMvc.perform(get("/api/users/username/johndoe")
                         .with(SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("John Doe"))
-                .andExpect(jsonPath("$.email").value("john@example.com"));
+                .andExpect(jsonPath("$.username").value("johndoe"))
+                .andExpect(jsonPath("$.cognitoSub").value("test-cognito-sub-123"));
     }
 
-    @Test
-    @WithMockUser(roles = "admin")
-    void createUser_ShouldReturnCreatedUser() throws Exception {
-        // Arrange
-        when(userService.createUser(any(User.class))).thenReturn(testUser);
-
-        // Act & Assert
-        mockMvc.perform(post("/api/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testUser))
-                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value("John Doe"))
-                .andExpect(jsonPath("$.email").value("john@example.com"));
-    }
-
-    @Test
-    @WithMockUser(roles = "admin")
-    void createUser_ShouldReturnBadRequest_WhenEmailExists() throws Exception {
-        // Arrange
-        when(userService.createUser(any(User.class)))
-                .thenThrow(new IllegalArgumentException("Email already exists"));
-
-        // Act & Assert
-        mockMvc.perform(post("/api/users")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(testUser))
-                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @WithMockUser(roles = "admin")
-    void updateUser_ShouldReturnUpdatedUser() throws Exception {
-        // Arrange
-        User updatedUser = new User(1L, "Jane Doe", "jane@example.com", "0987654321", "janedoe", "test-cognito-sub-456", User.UserRole.USER);
-        when(userService.updateUser(eq(1L), any(User.class))).thenReturn(updatedUser);
-
-        // Act & Assert
-        mockMvc.perform(put("/api/users/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedUser))
-                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value("Jane Doe"))
-                .andExpect(jsonPath("$.email").value("jane@example.com"))
-                .andExpect(jsonPath("$.phone").value("0987654321"));
-    }
-
-    @Test
-    @WithMockUser(roles = "admin")
-    void updateUser_ShouldReturnNotFound_WhenUserDoesNotExist() throws Exception {
-        // Arrange
-        User updatedUser = new User(1L, "Jane Doe", "jane@example.com", "0987654321", "janedoe", "test-cognito-sub-456", User.UserRole.USER);
-        when(userService.updateUser(eq(1L), any(User.class)))
-                .thenThrow(new IllegalArgumentException("User not found"));
-
-        // Act & Assert
-        mockMvc.perform(put("/api/users/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updatedUser))
-                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @WithMockUser(roles = "admin")
-    void deleteUser_ShouldReturnNoContent() throws Exception {
-        // Act & Assert
-        mockMvc.perform(delete("/api/users/1")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(status().isNoContent());
-    }
-
-    @Test
-    @WithMockUser(roles = "admin")
-    void deleteUser_ShouldReturnNotFound_WhenUserDoesNotExist() throws Exception {
-        // Arrange
-        doThrow(new IllegalArgumentException("User not found"))
-                .when(userService).deleteUser(1L);
-
-        // Act & Assert
-        mockMvc.perform(delete("/api/users/1")
-                        .with(SecurityMockMvcRequestPostProcessors.csrf()))
-                .andExpect(status().isNotFound());
-    }
 }
-

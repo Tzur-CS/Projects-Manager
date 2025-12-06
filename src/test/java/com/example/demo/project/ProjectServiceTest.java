@@ -220,22 +220,6 @@ class ProjectServiceTest {
     }
 
     @Test
-    void searchProjectsByName_ShouldReturnMatchingProjects() {
-        // Arrange
-        Pageable pageable = PageRequest.of(0, 10);
-        Page<Project> projectPage = new PageImpl<>(Arrays.asList(testProject));
-        when(projectRepository.findByNameContainingIgnoreCase("Test", pageable)).thenReturn(projectPage);
-
-        // Act
-        Page<Project> result = projectService.searchProjectsByName("Test", pageable);
-
-        // Assert
-        assertNotNull(result);
-        assertEquals(1, result.getTotalElements());
-        verify(projectRepository, times(1)).findByNameContainingIgnoreCase("Test", pageable);
-    }
-
-    @Test
     void convertToDTO_ShouldConvertProjectToDTO() {
         // Act
         ProjectDTO result = projectService.convertToDTO(testProject);

@@ -1,5 +1,7 @@
 package com.example.demo.user;
 
+import com.example.demo.exception.DuplicateResourceException;
+import com.example.demo.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +33,7 @@ class UserServiceTest {
 
     @BeforeEach
     void setUp() {
-        testUser = new User(1L, "John Doe", "john@example.com", "1234567890", "johndoe", "test-cognito-sub-123", User.UserRole.USER);
+        testUser = new User(1L, "johndoe", "test-cognito-sub-123", User.UserRole.USER);
     }
 
     @Test
@@ -46,7 +48,7 @@ class UserServiceTest {
         // Assert
         assertNotNull(result);
         assertEquals(1, result.size());
-        assertEquals("John Doe", result.get(0).getName());
+        assertEquals("johndoe", result.get(0).getUsername());
         verify(userRepository, times(1)).findAll();
     }
 
@@ -60,8 +62,7 @@ class UserServiceTest {
 
         // Assert
         assertTrue(result.isPresent());
-        assertEquals("John Doe", result.get().getName());
-        assertEquals("john@example.com", result.get().getEmail());
+        assertEquals("johndoe", result.get().getUsername());
         verify(userRepository, times(1)).findById(1L);
     }
 
@@ -79,55 +80,51 @@ class UserServiceTest {
     }
 
     @Test
-    void getUserByEmail_ShouldReturnUser_WhenEmailExists() {
+    void getUserByUsername_ShouldReturnUser_WhenUserExists() {
         // Arrange
-        when(userRepository.findByEmail("john@example.com")).thenReturn(Optional.of(testUser));
+        when(userRepository.findByUsername("johndoe")).thenReturn(Optional.of(testUser));
 
         // Act
-        Optional<User> result = userService.getUserByEmail("john@example.com");
+        Optional<User> result = userService.getUserByUsername("johndoe");
 
         // Assert
         assertTrue(result.isPresent());
-        assertEquals("John Doe", result.get().getName());
-        verify(userRepository, times(1)).findByEmail("john@example.com");
+        assertEquals("johndoe", result.get().getUsername());
+        verify(userRepository, times(1)).findByUsername("johndoe");
     }
 
     @Test
-    void createUser_ShouldSaveUser_WhenEmailDoesNotExist() {
+    void createUser_ShouldCreateUser_WhenUsernameDoesNotExist() {
         // Arrange
-        when(userRepository.existsByEmail(testUser.getEmail())).thenReturn(false);
+        User newUser = new User(null, "newuser", "new-cognito-sub", User.UserRole.USER);
+        when(userRepository.existsByUsername("newuser")).thenReturn(false);
         when(userRepository.save(any(User.class))).thenReturn(testUser);
 
         // Act
-        User result = userService.createUser(testUser);
+        User result = userService.createUser(newUser);
 
         // Assert
         assertNotNull(result);
-        assertEquals("John Doe", result.getName());
-        assertEquals("john@example.com", result.getEmail());
-        verify(userRepository, times(1)).existsByEmail(testUser.getEmail());
-        verify(userRepository, times(1)).save(any(User.class));
+        verify(userRepository, times(1)).existsByUsername("newuser");
+        verify(userRepository, times(1)).save(newUser);
     }
 
     @Test
-    void createUser_ShouldThrowException_WhenEmailExists() {
+    void createUser_ShouldThrowException_WhenUsernameExists() {
         // Arrange
-        when(userRepository.existsByEmail(testUser.getEmail())).thenReturn(true);
+        User newUser = new User(null, "johndoe", "new-cognito-sub", User.UserRole.USER);
+        when(userRepository.existsByUsername("johndoe")).thenReturn(true);
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.createUser(testUser);
-        });
-
-        assertEquals("Email already exists", exception.getMessage());
-        verify(userRepository, times(1)).existsByEmail(testUser.getEmail());
+        assertThrows(DuplicateResourceException.class, () -> userService.createUser(newUser));
+        verify(userRepository, times(1)).existsByUsername("johndoe");
         verify(userRepository, never()).save(any(User.class));
     }
 
     @Test
     void updateUser_ShouldUpdateUser_WhenUserExists() {
         // Arrange
-        User updatedDetails = new User(null, "Jane Doe", "jane@example.com", "0987654321", "janedoe", "test-cognito-sub-456", User.UserRole.USER);
+        User updatedDetails = new User(null, "updateduser", null, User.UserRole.ADMIN);
         when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
         when(userRepository.save(any(User.class))).thenReturn(testUser);
 
@@ -137,21 +134,17 @@ class UserServiceTest {
         // Assert
         assertNotNull(result);
         verify(userRepository, times(1)).findById(1L);
-        verify(userRepository, times(1)).save(any(User.class));
+        verify(userRepository, times(1)).save(testUser);
     }
 
     @Test
     void updateUser_ShouldThrowException_WhenUserDoesNotExist() {
         // Arrange
-        User updatedDetails = new User(null, "Jane Doe", "jane@example.com", "0987654321", "janedoe", "test-cognito-sub-456", User.UserRole.USER);
+        User updatedDetails = new User(null, "updateduser", null, User.UserRole.ADMIN);
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.updateUser(1L, updatedDetails);
-        });
-
-        assertTrue(exception.getMessage().contains("User not found"));
+        assertThrows(ResourceNotFoundException.class, () -> userService.updateUser(1L, updatedDetails));
         verify(userRepository, times(1)).findById(1L);
         verify(userRepository, never()).save(any(User.class));
     }
@@ -176,13 +169,9 @@ class UserServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         // Act & Assert
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            userService.deleteUser(1L);
-        });
-
-        assertTrue(exception.getMessage().contains("User not found"));
+        assertThrows(ResourceNotFoundException.class, () -> userService.deleteUser(1L));
         verify(userRepository, times(1)).findById(1L);
         verify(userRepository, never()).delete(any(User.class));
     }
-}
 
+}
