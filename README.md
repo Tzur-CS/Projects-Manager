@@ -138,7 +138,13 @@ export const API_BASE_URL = 'http://localhost:8080';
 **Option 1: Dev Mode (With AWS Cognito)**
 ```bash
 # From project root
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
+mvn spring-boot:run -D"spring-boot.run.profiles=dev" 
+```
+
+**Option 2: Prod Mode (With AWS Cognito)**
+```bash
+# From project root
+mvn spring-boot:run -D"spring-boot.run.profiles=prod" 
 ```
 
 The backend will start on **http://localhost:8080**
