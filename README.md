@@ -1,22 +1,12 @@
 # Projects Manager - Task Management System
 
-A full-stack web application for managing projects and tasks with user authentication, built with Spring Boot (Java) backend and React (TypeScript) frontend.
+### Answers in Answers.md
 
-## 📋 Table of Contents
-- [Overview](#overview)
-- [Features](#features)
-- [Tech Stack](#tech-stack)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Running the Application](#running-the-application)
-- [Project Structure](#project-structure)
-- [API Documentation](#api-documentation)
-- [Error Handling](#error-handling)
-- [Configuration](#configuration)
+A full-stack web application for managing projects and tasks with user authentication, built with Spring Boot (Java) backend and React (TypeScript) frontend.
 
 ## 🎯 Overview
 
-This is a full-stack task management application that allows users to:
+This is a full-stack (backend oriented) task management application that allows users to:
 - Create and manage projects
 - Create and assign tasks within projects
 - Track task status and priorities
@@ -32,7 +22,7 @@ This is a full-stack task management application that allows users to:
 - MySQL database integration
 - Health check endpoints
 - Swagger UI for API documentation
-- Multiple environment profiles (local, dev, prod)
+- Multiple environment profiles (dev, prod)
 
 ### Frontend (React + TypeScript)
 - Modern React with TypeScript and Vite
@@ -128,219 +118,95 @@ Update `src/config.ts` with your backend URL if needed:
 export const API_BASE_URL = 'http://localhost:8080';
 ```
 
-## 🚀 Running the Application
+## 🚀 How to Run
 
-### Method 1: Using Batch Scripts (Windows)
+### Start the Backend
 
-#### Start Backend - Local Mode (No Authentication)
+**Option 1: Local Mode (No Authentication - Recommended for Development if DB not init yet)**
 ```bash
 # From project root
-.\start-local.bat
+mvn spring-boot:run -Dspring-boot.run.profiles=local
 ```
 
-#### Start Backend - Dev Mode (With AWS Cognito)
+**Option 2: Dev Mode (With AWS Cognito)**
 ```bash
 # From project root
-.\start-dev.bat
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
 
-#### Start Frontend
+The backend will start on **http://localhost:8080**
+
+### Start the Frontend
+
 ```bash
 # From project root
-.\setup-frontend.bat
-# Or manually:
 cd frontend-code/my-react-app
 npm run dev
 ```
 
-### Method 2: Manual Commands
+The frontend will start on **http://localhost:5173**
 
-#### Start Backend
-```bash
-# From project root
-mvn spring-boot:run -Dspring-boot.run.profiles=local
-# Or for dev profile:
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
-```
-
-#### Start Frontend
-```bash
-# From frontend-code/my-react-app
-npm run dev
-```
-
-### Access the Application
-
-- **Frontend**: http://localhost:5173
+### Access Points
+- **Frontend UI**: http://localhost:5173
 - **Backend API**: http://localhost:8080
-- **Swagger UI**: http://localhost:8080/swagger-ui.html
-- **API Docs**: http://localhost:8080/v3/api-docs
-
+- **Swagger API Docs**: http://localhost:8080/swagger-ui.html
 
 ## 📚 API Documentation
 
-Once the backend is running, access the interactive API documentation:
-
-### Swagger UI
-Navigate to: http://localhost:8080/swagger-ui.html
+Once running, visit **http://localhost:8080/swagger-ui.html** for interactive API documentation.
 
 ### Main Endpoints
+- **Projects**: `/api/projects` - CRUD operations for projects
+- **Tasks**: `/api/tasks` - CRUD operations for tasks
+- **Admin Projects**: `/api/admin/projects` - Admin-only access to all projects
+- **Admin Tasks**: `/api/admin/tasks` - Admin-only access to all tasks
+- **Health**: `/api/health` - Application health check
 
-#### Projects
-- `GET /api/projects` - Get all projects
-- `GET /api/projects/{id}` - Get project by ID
-- `POST /api/projects` - Create new project
-- `PUT /api/projects/{id}` - Update project
-- `DELETE /api/projects/{id}` - Delete project
-
-#### Tasks
-- `GET /api/tasks` - Get all tasks
-- `GET /api/tasks/{id}` - Get task by ID
-- `GET /api/tasks/project/{projectId}` - Get tasks by project
-- `POST /api/tasks` - Create new task
-- `PUT /api/tasks/{id}` - Update task
-- `DELETE /api/tasks/{id}` - Delete task
-
-#### Health
-- `GET /api/health` - Check application health
-- `GET /api/health/db` - Check database connection
-
-## 🛡️ Error Handling
-
-The application implements a comprehensive error handling system with standardized responses.
-
-### Error Response Format
-All errors return a consistent JSON structure:
-```json
-{
-  "timestamp": "2025-12-06 16:07:41",
-  "status": 404,
-  "error": "Resource Not Found",
-  "message": "Project not found with id: '123'",
-  "path": "/api/projects/123"
-}
-```
-
-### HTTP Status Codes
-- **400 Bad Request**: Validation errors, invalid input
-- **401 Unauthorized**: Authentication required
-- **403 Forbidden**: Access denied
-- **404 Not Found**: Resource doesn't exist
-- **409 Conflict**: Duplicate resource or constraint violation
-- **500 Internal Server Error**: Unexpected server error
-
-### Custom Exceptions
-- `ResourceNotFoundException` - When a resource is not found (404)
-- `DuplicateResourceException` - When creating duplicate resources (409)
-- `UnauthorizedAccessException` - When accessing forbidden resources (403)
-- `InvalidRequestException` - When request data is invalid (400)
-
-For detailed error handling documentation, see [ERROR_HANDLING.md](ERROR_HANDLING.md)
-
-## ⚙️ Configuration
+## 🔧 Configuration
 
 ### Environment Profiles
+- **local**: No authentication, best for development
+- **dev**: AWS Cognito authentication enabled
+- **prod**: Full security, production settings
 
-The application supports multiple profiles:
-
-#### Local Profile (`local`)
-- No authentication required
-- Local MySQL database
-- Best for development
-
-#### Dev Profile (`dev`)
-- AWS Cognito authentication enabled
-- Local or remote MySQL database
-- Requires valid JWT tokens
-
-#### Prod Profile (`prod`)
-- Full authentication and security
-- Production database
-- Optimized settings
-
-### Environment Variables
-
-You can override properties using environment variables:
-
-```bash
-# Database
-export DB_URL=jdbc:mysql://localhost:3306/moveo-db
-export DB_USERNAME=root
-export DB_PASSWORD=yourpassword
-
-# AWS Cognito
-export COGNITO_USER_POOL_ID=your-pool-id
-export COGNITO_CLIENT_ID=your-client-id
-export COGNITO_REGION=your-region
+### Database Configuration
+Edit `src/main/resources/application.properties`:
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3306/moveo-db
+spring.datasource.username=root
+spring.datasource.password=your_password
 ```
 
-## 🔧 Development
+## 🧪 Testing
 
-### Running Tests
-
-#### Backend Tests
+**Backend:**
 ```bash
 mvn test
 ```
 
-#### Frontend Tests
+**Frontend:**
 ```bash
 cd frontend-code/my-react-app
 npm test
 ```
 
-### Building for Production
 
-#### Backend
-```bash
-mvn clean package
-java -jar target/demo-0.0.1-SNAPSHOT.jar
+## 📝 Project Structure
+
 ```
-
-#### Frontend
-```bash
-cd frontend-code/my-react-app
-npm run build
-# Build output will be in dist/
+moveo-project/
+├── src/main/java/               # Backend Java code
+│   ├── config/                  # Security, database config
+│   ├── project/                 # Project entity & controllers
+│   ├── task/                    # Task entity & controllers
+│   ├── user/                    # User entity & controllers
+│   └── exception/               # Error handling
+├── frontend-code/my-react-app/  # Frontend React code
+│   └── src/
+│       ├── components/          # React components
+│       ├── pages/               # Page components
+│       ├── hooks/               # Custom hooks
+│       └── services/            # API services
+└── src/main/resources/          # Configuration files
 ```
-
-## 🐛 Troubleshooting
-
-### Backend Issues
-
-1. **Database Connection Failed**
-   - Ensure MySQL is running
-   - Check credentials in `application.properties`
-   - Verify database exists or set `createDatabaseIfNotExist=true`
-
-2. **Port 8080 Already in Use**
-   - Change port in `application.properties`: `server.port=8081`
-   - Or kill the process using port 8080
-
-### Frontend Issues
-
-1. **Cannot Connect to Backend**
-   - Verify backend is running on http://localhost:8080
-   - Check CORS configuration
-   - Update API URL in `src/config.ts`
-
-2. **Module Not Found**
-   - Run `npm install` again
-   - Delete `node_modules` and `package-lock.json`, then reinstall
-
-## 📝 License
-
-This project is private and proprietary.
-
-## 👥 Contributors
-
-- Tzur CS ([@Tzur-CS](https://github.com/Tzur-CS))
-
-## 📧 Support
-
-For questions or issues, please open an issue on GitHub or contact the development team.
-
----
-
-**Happy Coding! 🚀**
 
