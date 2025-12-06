@@ -19,7 +19,7 @@ import {
   Refresh as RefreshIcon,
 } from "@mui/icons-material";
 import { authService } from "../services/auth";
-import { usePingTest, useAuthTest, useMeTest, useStatusTest } from "../hooks";
+import { usePingTest, useAuthTest, useMeTest } from "../hooks";
 import { useQueryClientContext } from "../config/queryClient";
 import { Header } from "../components";
 
@@ -33,7 +33,6 @@ const HealthCheck = () => {
   const pingQuery = usePingTest();
   const authQuery = useAuthTest();
   const meQuery = useMeTest();
-  const statusQuery = useStatusTest();
 
   useEffect(() => {
     checkAuth();
@@ -93,16 +92,10 @@ const HealthCheck = () => {
             startIcon={<RefreshIcon />}
             onClick={handleRefreshAll}
             disabled={
-              pingQuery.isLoading ||
-              authQuery.isLoading ||
-              meQuery.isLoading ||
-              statusQuery.isLoading
+              pingQuery.isLoading || authQuery.isLoading || meQuery.isLoading
             }
           >
-            {pingQuery.isFetching ||
-            authQuery.isFetching ||
-            meQuery.isFetching ||
-            statusQuery.isFetching
+            {pingQuery.isFetching || authQuery.isFetching || meQuery.isFetching
               ? "Refreshing..."
               : "Run All Tests"}
           </Button>
@@ -143,9 +136,7 @@ const HealthCheck = () => {
                   </Alert>
                 ) : pingQuery.isSuccess ? (
                   <Box sx={{ p: 2, bgcolor: "#f5f5f5", borderRadius: 1 }}>
-                    <pre style={{ margin: 0, fontSize: 12 }}>
-                      {JSON.stringify(pingQuery.data, null, 2)}
-                    </pre>
+                    <pre style={{ margin: 0, fontSize: 12 }}>Ping Test: OK</pre>
                   </Box>
                 ) : (
                   <Typography color="text.secondary">Testing...</Typography>
@@ -201,7 +192,7 @@ const HealthCheck = () => {
                     />
                     <Box sx={{ p: 2, bgcolor: "#f5f5f5", borderRadius: 1 }}>
                       <pre style={{ margin: 0, fontSize: 12 }}>
-                        {JSON.stringify(authQuery.data, null, 2)}
+                        Auth Test: OK
                       </pre>
                     </Box>
                   </Box>
@@ -256,18 +247,6 @@ const HealthCheck = () => {
                         >
                           {meQuery.data.userId}
                         </Typography>
-                        <Typography variant="subtitle2">Username:</Typography>
-                        <Typography
-                          variant="body2"
-                          color="primary"
-                          sx={{ mb: 1 }}
-                        >
-                          {meQuery.data.username}
-                        </Typography>
-                        <Typography variant="subtitle2">Email:</Typography>
-                        <Typography variant="body2" color="primary">
-                          {meQuery.data.email}
-                        </Typography>
                       </Box>
                     )}
                     <Divider sx={{ my: 2 }} />
@@ -280,63 +259,8 @@ const HealthCheck = () => {
                         overflow: "auto",
                       }}
                     >
-                      <pre style={{ margin: 0, fontSize: 12 }}>
-                        {JSON.stringify(meQuery.data, null, 2)}
-                      </pre>
+                      <pre style={{ margin: 0, fontSize: 12 }}>Me Test: OK</pre>
                     </Box>
-                  </Box>
-                ) : (
-                  <Typography color="text.secondary">Testing...</Typography>
-                )}
-              </CardContent>
-            </Card>
-          </Grid>
-
-          {/* Test 4: System Status */}
-          <Grid item xs={12} md={6}>
-            <Card>
-              <CardContent>
-                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
-                  {statusQuery.isSuccess ? (
-                    <SuccessIcon color="success" sx={{ mr: 1 }} />
-                  ) : statusQuery.isError ? (
-                    <ErrorIcon color="error" sx={{ mr: 1 }} />
-                  ) : (
-                    <CircularProgress size={24} sx={{ mr: 1 }} />
-                  )}
-                  <Typography variant="h6">4. System Status</Typography>
-                  {statusQuery.isFetching && !statusQuery.isLoading && (
-                    <Chip label="Updating..." size="small" sx={{ ml: 1 }} />
-                  )}
-                </Box>
-
-                <Typography
-                  variant="body2"
-                  color="text.secondary"
-                  sx={{ mb: 2 }}
-                >
-                  Gets backend system status and configuration
-                </Typography>
-
-                {statusQuery.isError ? (
-                  <Alert severity="error">
-                    {statusQuery.error instanceof Error
-                      ? statusQuery.error.message
-                      : "Unknown error"}
-                  </Alert>
-                ) : statusQuery.isSuccess ? (
-                  <Box
-                    sx={{
-                      p: 2,
-                      bgcolor: "#f5f5f5",
-                      borderRadius: 1,
-                      maxHeight: 300,
-                      overflow: "auto",
-                    }}
-                  >
-                    <pre style={{ margin: 0, fontSize: 12 }}>
-                      {JSON.stringify(statusQuery.data, null, 2)}
-                    </pre>
                   </Box>
                 ) : (
                   <Typography color="text.secondary">Testing...</Typography>
@@ -381,16 +305,6 @@ const HealthCheck = () => {
                     <ErrorIcon color="error" sx={{ fontSize: 40 }} />
                   )}
                   <Typography variant="body2">User Info</Typography>
-                </Box>
-              </Grid>
-              <Grid item xs={12} sm={6} md={3}>
-                <Box sx={{ textAlign: "center", p: 2 }}>
-                  {statusQuery.isSuccess ? (
-                    <SuccessIcon color="success" sx={{ fontSize: 40 }} />
-                  ) : (
-                    <ErrorIcon color="error" sx={{ fontSize: 40 }} />
-                  )}
-                  <Typography variant="body2">System Status</Typography>
                 </Box>
               </Grid>
             </Grid>

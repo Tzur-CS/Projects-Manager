@@ -33,14 +33,10 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const result = await authService.signIn(username, password);
-      console.log("=== LOGIN SUCCESS ===");
-      console.log("User:", result);
-
+      await authService.signIn(username, password);
       // Get access token
       const token = await authService.getAccessToken();
       console.log("Access Token:", token);
-      console.log("====================");
 
       // Redirect to app home page
       navigate("/home");

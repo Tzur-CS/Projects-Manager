@@ -62,18 +62,36 @@ const TaskList = ({
     const handleScroll = () => {
       const { scrollTop, scrollHeight, clientHeight } = listElement;
       // Load more when user scrolls to within 100px of bottom
-      if (
-        scrollHeight - scrollTop - clientHeight < 100 &&
-        hasNextPage &&
-        !isFetchingNextPage
-      ) {
+      const distanceFromBottom = scrollHeight - scrollTop - clientHeight;
+      if (distanceFromBottom < 100 && hasNextPage && !isFetchingNextPage) {
         onLoadMore();
       }
     };
 
     listElement.addEventListener("scroll", handleScroll);
-    return () => listElement.removeEventListener("scroll", handleScroll);
-  }, [hasNextPage, isFetchingNextPage, onLoadMore]);
+
+    // Check if content is too short to scroll - if so, load more automatically
+    const checkInitialLoad = () => {
+      const { scrollHeight, clientHeight } = listElement;
+      // If content doesn't fill the container and there are more pages, load them
+      if (
+        scrollHeight <= clientHeight &&
+        hasNextPage &&
+        !isFetchingNextPage &&
+        tasks.length > 0
+      ) {
+        onLoadMore();
+      }
+    };
+
+    // Check after a short delay to allow DOM to update
+    const timeoutId = setTimeout(checkInitialLoad, 100);
+
+    return () => {
+      listElement.removeEventListener("scroll", handleScroll);
+      clearTimeout(timeoutId);
+    };
+  }, [hasNextPage, isFetchingNextPage, onLoadMore, tasks.length]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -120,62 +138,77 @@ const TaskList = ({
             ) : !tasks || tasks.length === 0 ? (
               <Typography color="text.secondary">No tasks yet</Typography>
             ) : (
-              <List
+              <Box
                 ref={listRef}
                 sx={{
                   maxHeight: "calc(100vh - 300px)",
                   overflowY: "auto",
                 }}
               >
-                {tasks.map((task) => (
-                  <ListItem
-                    key={task.id}
-                    secondaryAction={
-                      <Box>
-                        <IconButton
-                          size="small"
-                          onClick={() => onEditTask(task)}
-                          disabled={isDeleting}
-                        >
-                          <EditIcon fontSize="small" />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          onClick={() => onDeleteTask(task.id)}
-                          disabled={isDeleting}
-                        >
-                          <DeleteIcon fontSize="small" />
-                        </IconButton>
-                      </Box>
-                    }
-                  >
-                    <ListItemText
-                      primary={task.title}
-                      secondary={task.description}
-                    />
-                    <Chip
-                      label={task.status.replace("_", " ")}
-                      size="small"
-                      color={getStatusColor(task.status) as any}
-                      onClick={() => onStatusChange(task.id, task.status)}
-                      sx={{ mr: 4, cursor: "pointer" }}
-                      disabled={isUpdatingStatus}
-                    />
-                  </ListItem>
-                ))}
-                {isFetchingNextPage && (
-                  <Box sx={{ display: "flex", justifyContent: "center", p: 2 }}>
-                    <CircularProgress size={24} />
-                  </Box>
-                )}
-                {!hasNextPage && tasks.length > 0 && (
-                  <Box sx={{ textAlign: "center", p: 2 }}>
-                    <Typography variant="caption" color="text.secondary">
-                      No more tasks
-                    </Typography>
-                  </Box>
-                )}
-              </List>
+                <List>
+                  {tasks.map((task) => (
+                    <ListItem
+                      key={task.id}
+                      secondaryAction={
+                        <Box>
+                          <IconButton
+                            size="small"
+                            onClick={() => onEditTask(task)}
+                            disabled={isDeleting}
+                          >
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                          <IconButton
+                            size="small"
+                            onClick={() => onDeleteTask(task.id)}
+                            disabled={isDeleting}
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Box>
+                      }
+                    >
+                      <ListItemText
+                        primary={task.title}
+                        secondary={task.description}
+                      />
+                      <Chip
+                        label={task.status.replace("_", " ")}
+                        size="small"
+                        color={getStatusColor(task.status) as any}
+                        onClick={() => onStatusChange(task.id, task.status)}
+                        sx={{ mr: 4, cursor: "pointer" }}
+                        disabled={isUpdatingStatus}
+                      />
+                    </ListItem>
+                  ))}
+                  {isFetchingNextPage && (
+                    <Box
+                      sx={{ display: "flex", justifyContent: "center", p: 2 }}
+                    >
+                      <CircularProgress size={24} />
+                    </Box>
+                  )}
+                  {hasNextPage && !isFetchingNextPage && (
+                    <Box sx={{ textAlign: "center", p: 2 }}>
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={onLoadMore}
+                      >
+                        Load More Tasks
+                      </Button>
+                    </Box>
+                  )}
+                  {!hasNextPage && tasks.length > 0 && (
+                    <Box sx={{ textAlign: "center", p: 2 }}>
+                      <Typography variant="caption" color="text.secondary">
+                        No more tasks
+                      </Typography>
+                    </Box>
+                  )}
+                </List>
+              </Box>
             )}
           </>
         ) : (

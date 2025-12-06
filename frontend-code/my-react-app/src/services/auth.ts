@@ -114,9 +114,6 @@ export const authService = {
     try {
       const session = await fetchAuthSession();
       const token = session.tokens?.accessToken?.toString();
-      console.log('=== ACCESS TOKEN ===');
-      console.log(token);
-      console.log('====================');
       return token || null;
     } catch (error) {
       console.error('Error getting access token:', error);
