@@ -109,8 +109,6 @@ public class TaskService {
     }
 
     public Task updateTaskStatus(Long id, Task.TaskStatus status, String userId, boolean isAdmin) {
-        log.info("Updating task status for task id: {} to status: {}", id, status);
-
         Task task = getTaskById(id);
 
         if (!isAdmin) {
