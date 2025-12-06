@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { projectService } from "../services/projectService";
 import type { CreateProjectDTO, Project } from "../services/projectService";
 
@@ -33,16 +33,6 @@ export const useProjectsFlat = () => {
   };
 };
 
-// Get single project
-export const useProject = (projectId: number) => {
-  return useQuery({
-    queryKey: ["projects", projectId],
-    queryFn: async () => {
-      return await projectService.getProjectById(projectId);
-    },
-    enabled: !!projectId,
-  });
-};
 
 // Create project mutation
 export const useCreateProject = () => {

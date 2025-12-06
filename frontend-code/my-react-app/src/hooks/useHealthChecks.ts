@@ -7,7 +7,6 @@ export const usePingTest = () => {
     queryKey: ["health", "ping"],
     queryFn: async () => {
       const response = await api.get("/api/health/ping");
-      console.log("✅ Ping Test:", response.data);
       return response.data;
     },
   });
@@ -19,7 +18,6 @@ export const useAuthTest = () => {
     queryKey: ["health", "auth"],
     queryFn: async () => {
       const response = await api.get("/api/health/auth");
-      console.log("✅ Auth Test:", response.data);
       return response.data;
     },
   });
@@ -31,21 +29,9 @@ export const useMeTest = () => {
     queryKey: ["health", "me"],
     queryFn: async () => {
       const response = await api.get("/api/health/me");
-      console.log("✅ Me Test:", response.data);
       return response.data;
     },
   });
 };
 
-// Hook for status test
-export const useStatusTest = () => {
-  return useQuery({
-    queryKey: ["health", "status"],
-    queryFn: async () => {
-      const response = await api.get("/api/health/status");
-      console.log("✅ Status Test:", response.data);
-      return response.data;
-    },
-  });
-};
 
