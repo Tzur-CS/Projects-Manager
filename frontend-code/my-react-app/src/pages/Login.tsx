@@ -42,8 +42,8 @@ const Login = () => {
       console.log("Access Token:", token);
       console.log("====================");
 
-      // Redirect to health check page to verify connection
-      navigate("/health");
+      // Redirect to app home page
+      navigate("/home");
     } catch (err: any) {
       console.error("Login error:", err);
 
