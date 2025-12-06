@@ -11,6 +11,7 @@ A full-stack web application for managing projects and tasks with user authentic
 - [Running the Application](#running-the-application)
 - [Project Structure](#project-structure)
 - [API Documentation](#api-documentation)
+- [Error Handling](#error-handling)
 - [Configuration](#configuration)
 
 ## 🎯 Overview
@@ -261,6 +262,38 @@ Navigate to: http://localhost:8080/swagger-ui.html
 #### Health
 - `GET /api/health` - Check application health
 - `GET /api/health/db` - Check database connection
+
+## 🛡️ Error Handling
+
+The application implements a comprehensive error handling system with standardized responses.
+
+### Error Response Format
+All errors return a consistent JSON structure:
+```json
+{
+  "timestamp": "2025-12-06 16:07:41",
+  "status": 404,
+  "error": "Resource Not Found",
+  "message": "Project not found with id: '123'",
+  "path": "/api/projects/123"
+}
+```
+
+### HTTP Status Codes
+- **400 Bad Request**: Validation errors, invalid input
+- **401 Unauthorized**: Authentication required
+- **403 Forbidden**: Access denied
+- **404 Not Found**: Resource doesn't exist
+- **409 Conflict**: Duplicate resource or constraint violation
+- **500 Internal Server Error**: Unexpected server error
+
+### Custom Exceptions
+- `ResourceNotFoundException` - When a resource is not found (404)
+- `DuplicateResourceException` - When creating duplicate resources (409)
+- `UnauthorizedAccessException` - When accessing forbidden resources (403)
+- `InvalidRequestException` - When request data is invalid (400)
+
+For detailed error handling documentation, see [ERROR_HANDLING.md](ERROR_HANDLING.md)
 
 ## ⚙️ Configuration
 

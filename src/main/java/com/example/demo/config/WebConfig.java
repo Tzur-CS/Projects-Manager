@@ -26,10 +26,8 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addMapping("/api/**")
                 .allowedOrigins(
                         "http://localhost:3000",      // Create React App
-                        "http://localhost:4200",      // Angular
                         "http://localhost:5173",      // Vite (React/Vue)
-                        "http://localhost:5174",      // Vite alternate
-                        "http://localhost:8081"       // Alternative port
+                        "http://localhost:5174"      // Vite alternate
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")

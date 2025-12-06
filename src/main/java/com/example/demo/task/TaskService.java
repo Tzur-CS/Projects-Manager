@@ -1,5 +1,6 @@
 package com.example.demo.task;
 
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.project.Project;
 import com.example.demo.project.ProjectService;
 import com.example.demo.task.dto.CreateTaskRequest;
@@ -54,7 +55,7 @@ public class TaskService {
 
     public Task getTaskById(Long id) {
         return taskRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Task not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Task", "id", id));
     }
 
     public Task createTask(CreateTaskRequest request, String userId, boolean isAdmin) {

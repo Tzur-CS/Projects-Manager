@@ -1,5 +1,7 @@
 package com.example.demo.project;
 
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.UnauthorizedAccessException;
 import com.example.demo.project.dto.CreateProjectRequest;
 import com.example.demo.project.dto.ProjectDTO;
 import com.example.demo.project.dto.UpdateProjectRequest;
@@ -50,7 +52,7 @@ public class ProjectService {
     public Project getProjectById(Long id) {
         log.debug("Fetching project with id: {}", id);
         return projectRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Project not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Project", "id", id));
     }
 
     /**
@@ -60,7 +62,7 @@ public class ProjectService {
     public Project getProjectByIdAndOwner(Long id, String ownerId) {
         log.debug("Fetching project with id: {} for owner: {}", id, ownerId);
         return projectRepository.findByIdAndOwnerId(id, ownerId)
-                .orElseThrow(() -> new IllegalArgumentException("Project not found or access denied"));
+                .orElseThrow(() -> new UnauthorizedAccessException("Project not found or you don't have access to this project"));
     }
 
     /**
