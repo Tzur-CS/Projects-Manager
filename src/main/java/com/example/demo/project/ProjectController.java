@@ -36,17 +36,6 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @GetMapping
-    @PreAuthorize("hasRole('admin')")
-    @Operation(summary = "Get all projects (Admin only)", description = "Retrieve all projects with pagination")
-    public ResponseEntity<Page<ProjectDTO>> getAllProjects(
-            @PageableDefault(size = 10) Pageable pageable) {
-        log.info("Fetching all projects");
-        Page<Project> projects = projectService.getAllProjects(pageable);
-        Page<ProjectDTO> projectDTOs = projects.map(projectService::convertToDTO);
-        return ResponseEntity.ok(projectDTOs);
-    }
-
     @GetMapping("/my-projects")
     @Operation(summary = "Get user's projects", description = "Retrieve projects owned by the authenticated user")
     public ResponseEntity<Page<ProjectDTO>> getMyProjects(
@@ -59,20 +48,6 @@ public class ProjectController {
         return ResponseEntity.ok(projectDTOs);
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Get project by ID", description = "Retrieve a specific project by its ID")
-    public ResponseEntity<ProjectDTO> getProjectById(
-            @PathVariable Long id,
-            Authentication authentication) {
-        String userId = getUserId(authentication);
-        boolean isAdmin = hasRole(authentication, "admin");
-        log.info("Fetching project with id: {} for user: {}", id, userId);
-
-        Project project = isAdmin ? projectService.getProjectById(id)
-                                  : projectService.getProjectByIdAndOwner(id, userId);
-
-        return ResponseEntity.ok(projectService.convertToDTO(project));
-    }
 
     @PostMapping
     @Operation(summary = "Create a new project", description = "Create a new project with name and description")
@@ -86,40 +61,26 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    @Operation(summary = "Update a project", description = "Update project name and/or description")
+    @Operation(summary = "Update a project", description = "Update your own project's name and/or description")
     public ResponseEntity<ProjectDTO> updateProject(
             @PathVariable Long id,
             @Valid @RequestBody UpdateProjectRequest request,
             Authentication authentication) {
         String userId = getUserId(authentication);
-        boolean isAdmin = hasRole(authentication, "admin");
         log.info("Updating project with id: {} by user: {}", id, userId);
-        Project project = projectService.updateProject(id, request, userId, isAdmin);
+        Project project = projectService.updateProject(id, request, userId, false);
         return ResponseEntity.ok(projectService.convertToDTO(project));
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "Delete a project", description = "Delete an existing project")
+    @Operation(summary = "Delete a project", description = "Delete your own project")
     public ResponseEntity<Void> deleteProject(
             @PathVariable Long id,
             Authentication authentication) {
         String userId = getUserId(authentication);
-        boolean isAdmin = hasRole(authentication, "admin");
         log.info("Deleting project with id: {} by user: {}", id, userId);
-
-        projectService.deleteProject(id, userId, isAdmin);
+        projectService.deleteProject(id, userId, false);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/search")
-    @Operation(summary = "Search projects by name", description = "Search projects by name with pagination")
-    public ResponseEntity<Page<ProjectDTO>> searchProjects(
-            @RequestParam String name,
-            @PageableDefault(size = 10) Pageable pageable) {
-        log.info("Searching projects by name: {}", name);
-        Page<Project> projects = projectService.searchProjectsByName(name, pageable);
-        Page<ProjectDTO> projectDTOs = projects.map(projectService::convertToDTO);
-        return ResponseEntity.ok(projectDTOs);
     }
 
     private String getUserId(Authentication authentication) {

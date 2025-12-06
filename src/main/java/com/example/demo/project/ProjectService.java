@@ -161,14 +161,6 @@ public class ProjectService {
         log.info("Project deleted successfully with id: {}", id);
     }
 
-    /**
-     * Search projects by name
-     */
-    @Transactional(readOnly = true)
-    public Page<Project> searchProjectsByName(String name, Pageable pageable) {
-        log.debug("Searching projects by name: {}", name);
-        return projectRepository.findByNameContainingIgnoreCase(name, pageable);
-    }
 
     /**
      * Convert Project entity to DTO
